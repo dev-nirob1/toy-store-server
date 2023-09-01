@@ -26,7 +26,14 @@ async function run() {
         const testimonialsCollection = client.db("toyCar").collection("testimonial");
         const toysCollection = client.db("toyCar").collection("toys");
 
+        app.get('/toys', async (req, res) => {
+            const cursor = toysCollection.find()
+            const result = await cursor.toArray()
+            res.send(result)
+        })
         
+  
+
         app.post('/toys', async (req, res) => {
             const toys = req.body;
             const result = await toysCollection.insertOne(toys)

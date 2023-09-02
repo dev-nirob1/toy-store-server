@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 require('dotenv').config()
 const port = process.env.PORT || 5000;
@@ -31,13 +31,26 @@ async function run() {
             const result = await cursor.toArray()
             res.send(result)
         })
-        
-        app.get('/myToys', async (req, res) => {
+
+        app.get('/toys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await toysCollection.findOne(query)
+            res.send(result)
+        })
+
+        app.get('/my-toys', async (req, res) => {
             let query = {};
             if (req.query.email) {
                 query = { email: req.query.email }
             }
             const result = await toysCollection.find(query).toArray()
+            res.send(result)
+        })
+        
+        app.get('/testimonials', async (req, res) => {
+            const cursor = testimonialsCollection.find();
+            const result = await cursor.toArray();
             res.send(result)
         })
 
@@ -47,11 +60,22 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/testimonials', async (req, res) => {
-            const cursor = testimonialsCollection.find();
-            const result = await cursor.toArray();
-            res.send(result)
+        app.patch('/update/:id', async(req, res) =>{
+            const id = req.params.id;
+            const updateToy = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedToy = {
+                $set: {
+                  price: updateToy.price,
+                  quantity: updateToy.quantity,
+                  description: updateToy.description
+                },
+              };
+              const result = await toysCollection.updateOne(filter, updatedToy, options)
+              res.send(result)
         })
+
 
 
 

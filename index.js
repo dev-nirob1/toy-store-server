@@ -31,6 +31,13 @@ async function run() {
             const result = await cursor.toArray()
             res.send(result)
         })
+        
+        app.get('/toys/:category', async (req, res) => {
+            const category = req.params.category
+            const cursor = toysCollection.find({category: category})
+            const result = await cursor.toArray()
+            res.send(result)
+        })
 
         app.get('/toys/:id', async (req, res) => {
             const id = req.params.id;
@@ -47,7 +54,7 @@ async function run() {
             const result = await toysCollection.find(query).toArray()
             res.send(result)
         })
-        
+
         app.get('/testimonials', async (req, res) => {
             const cursor = testimonialsCollection.find();
             const result = await cursor.toArray();
@@ -60,30 +67,28 @@ async function run() {
             res.send(result)
         })
 
-        app.patch('/update/:id', async(req, res) =>{
+        app.patch('/update/:id', async (req, res) => {
             const id = req.params.id;
             const updateToy = req.body;
             const filter = { _id: new ObjectId(id) };
             const options = { upsert: true };
             const updatedToy = {
                 $set: {
-                  price: updateToy.price,
-                  quantity: updateToy.quantity,
-                  description: updateToy.description
+                    price: updateToy.price,
+                    quantity: updateToy.quantity,
+                    description: updateToy.description,
                 },
-              };
-              const result = await toysCollection.updateOne(filter, updatedToy, options)
-              res.send(result)
-        })
-        app.delete('/toys/:id', async(req, res)=>{
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id)}
-            const result = await toysCollection.deleteOne(query)
+            };
+            const result = await toysCollection.updateOne(filter, updatedToy, options)
             res.send(result)
         })
 
-
-
+        app.delete('/toys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await toysCollection.deleteOne(query)
+            res.send(result)
+        })
 
 
         // Connect the client to the server	(optional starting in v4.7)
@@ -97,7 +102,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
 
 app.get('/', (req, res) => {
     res.send('hello world')

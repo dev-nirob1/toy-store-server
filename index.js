@@ -25,6 +25,7 @@ async function run() {
     try {
         const testimonialsCollection = client.db("toyCar").collection("testimonial");
         const toysCollection = client.db("toyCar").collection("toys");
+        const bannerCollection = client.db("toyCar").collection("banner");
 
         app.get('/toys', async (req, res) => {
             const cursor = toysCollection.find()
@@ -47,7 +48,6 @@ async function run() {
         })
 
         
-
         app.get('/my-toys', async (req, res) => {
             let query = {};
             if (req.query.email) {
@@ -59,6 +59,12 @@ async function run() {
 
         app.get('/testimonials', async (req, res) => {
             const cursor = testimonialsCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+
+        app.get('/sliderInfo', async (req, res) => {
+            const cursor = bannerCollection.find();
             const result = await cursor.toArray();
             res.send(result)
         })

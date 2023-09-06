@@ -31,20 +31,22 @@ async function run() {
             const result = await cursor.toArray()
             res.send(result)
         })
-        
-        app.get('/toys/:category', async (req, res) => {
+
+        app.get('/toys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await toysCollection.findOne(query);
+            res.send(result)
+        })
+
+        app.get('/toys/category/:category', async (req, res) => {
             const category = req.params.category
             const cursor = toysCollection.find({category: category})
             const result = await cursor.toArray()
             res.send(result)
         })
 
-        app.get('/toys/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
-            const result = await toysCollection.findOne(query)
-            res.send(result)
-        })
+        
 
         app.get('/my-toys', async (req, res) => {
             let query = {};

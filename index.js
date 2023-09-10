@@ -42,7 +42,7 @@ async function run() {
 
         app.get('/toys/category/:category', async (req, res) => {
             const category = req.params.category
-            const cursor = toysCollection.find({category: category})
+            const cursor = toysCollection.find({SubCategory: category})
             const result = await cursor.toArray()
             res.send(result)
         })

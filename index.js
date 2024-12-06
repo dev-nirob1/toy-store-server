@@ -32,6 +32,13 @@ async function run() {
             const result = await cursor.toArray()
             res.send(result)
         })
+        app.get('/toys/features', async (req, res) => {
+            const result = await toysCollection.aggregate([
+                { $sample: { size: 6 } }
+            ]).toArray();
+            res.send(result);
+
+        });
 
         app.get('/toys/:id', async (req, res) => {
             const id = req.params.id;
@@ -42,12 +49,12 @@ async function run() {
 
         app.get('/toys/category/:category', async (req, res) => {
             const category = req.params.category
-            const cursor = toysCollection.find({SubCategory: category})
+            const cursor = toysCollection.find({ category: category })
             const result = await cursor.toArray()
             res.send(result)
         })
 
-        
+
         app.get('/my-toys', async (req, res) => {
             let query = {};
             if (req.query.email) {
